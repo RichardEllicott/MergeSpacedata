@@ -111,7 +111,7 @@ parsec_to_lightyear = 3.26156
 
 def main():
 
-    csv_writer = csv.writer(open('hygdata_v3.PROCESSED.csv', 'w', newline=''))
+    csv_writer = csv.writer(open('hygdata_v3__200LightYears.ucsv', 'w', newline=''))
 
     filename = "./HYG-Database/hygdata_v3.csv"
 
@@ -120,7 +120,7 @@ def main():
     records_with_name = []
     records_in_distance = []
 
-    max_distance = 50 / parsec_to_lightyear  # 987 records exist in 50 light years
+    max_distance = 200.0 / parsec_to_lightyear  # 987 records exist in 50 light years
 
     ttl = 10000000
 
@@ -234,7 +234,9 @@ sinbad_cache = SqliteDict("sinbad_cache.sqlite")
 def get_sinbad_data(key):
 
 
+    # if key in sinbad_cache and sinbad_cache[key] != None:
     if key in sinbad_cache:
+
 
         # print('key "{}" found!!'.format(key))
         return sinbad_cache[key]
@@ -299,7 +301,7 @@ def filtered_data_crunch():
     origin = (0.0,0.0,0.0) # work out the distance from this position
     # origin = (2.355468, -4.4873, 0.790749)
 
-    max_distance = 30.0 / 3.26156 # parsecs
+    max_distance = 130.0 / 3.26156 # parsecs
 
 
     csv_writer = csv.writer(
@@ -308,12 +310,16 @@ def filtered_data_crunch():
 
     new_header2 = ["id","name", "x", "y", "z", "ci"]
     csv_writer2 = csv.writer(
-        open('compiled_game_data.ucsv', 'w', newline=''))
+        open('hygdata_v3_compiled_gamedata.ucsv', 'w', newline=''))
     csv_writer2.writerow(new_header2)
 
 
 
-    filename = "hygdata_v3__100LightYears.ucsv"
+    # filename = "hygdata_v3__100LightYears.ucsv"
+    filename = "hygdata_v3__200LightYears.ucsv" # PRETTY BIG!
+    # filename = "./HYG-Database/hygdata_v3.csv" ## WARNING HUGE FILE
+
+
 
     # open file in read mode
     with open(filename, 'r') as read_obj:
@@ -348,97 +354,100 @@ def filtered_data_crunch():
             dist = float(row[keys['dist']])
 
 
-            vector_distance = (x - origin[0], y - origin[1], z - origin[2])
-
-            vector_distance_mag = pow(pow(vector_distance[0],2.0) + pow(vector_distance[1],2.0) + pow(vector_distance[2],2.0),0.5)
-
-
-            # print("id: {} distance: {} vector: {} vdistance: {}".format(_id,dist,vector_distance,vector_distance_mag))
-
-
-
-
-            hip = row[keys['hip']]
-            proper = row[keys['proper']]
-
-
-            hd = row[keys['hd']]
-            hr = row[keys['hr']]
-            gl = row[keys['gl']]
-
-            ci = row[keys['ci']]
-
-
-            sinbad_data = None
-
-            if not sinbad_data:
-                col_name = 'hip'
-                key = row[keys[col_name]]
-                if key != "":
-                    key = "{} {}".format(col_name, key)
-                    # print("we would test key: ", key)
-                    sinbad_data = get_sinbad_data(key)
-
-            if not sinbad_data:
-                col_name = 'hd'
-                key = row[keys[col_name]]
-                if key != "":
-                    key = "{} {}".format(col_name, key)
-                    # print("we would test key: ", key)
-                    sinbad_data = get_sinbad_data(key)
-
-            if not sinbad_data:
-                col_name = 'hr'
-                key = row[keys[col_name]]
-                if key != "":
-                    key = "{} {}".format(col_name, key)
-                    # print("we would test key: ", key)
-                    sinbad_data = get_sinbad_data(key)
-
-            if not sinbad_data:
-                col_name = 'gl'
-                key = row[keys[col_name]]
-                if key != "":
-                    # key = "{} {}".format(col_name, key) ## NOTE THIS KEY SEEMS TO WORK LIKE THIS!
-                    # print("we would test key: ", key)
-
-                    if not key.startswith("NN"):
-
-                        sinbad_data = get_sinbad_data(key)
-                    else:
-                        # print("WARNING SKIPPED NN...")
-                        pass
-
-
-
-
-
-            if proper == "":
-
-                if sinbad_data:
-                    proper = sinbad_data['MAIN_ID']
-
-                    proper = proper.replace("NAME", "") ## some of them have "NAME" in them
-
-                    proper = re.sub(' +', ' ', proper) ## strip away all the long chunks of spaces "the   quick  brown   fox" => "the quick brown fox"
-
-
-
             if dist < max_distance:
+
+
+                vector_distance = (x - origin[0], y - origin[1], z - origin[2])
+
+                vector_distance_mag = pow(pow(vector_distance[0],2.0) + pow(vector_distance[1],2.0) + pow(vector_distance[2],2.0),0.5)
+
+
+                # print("id: {} distance: {} vector: {} vdistance: {}".format(_id,dist,vector_distance,vector_distance_mag))
+
+
+
+
+                hip = row[keys['hip']]
+                proper = row[keys['proper']]
+
+
+                hd = row[keys['hd']]
+                hr = row[keys['hr']]
+                gl = row[keys['gl']]
+
+                ci = row[keys['ci']]
+
+
+                sinbad_data = None
+
+                if not sinbad_data:
+                    col_name = 'hip'
+                    key = row[keys[col_name]]
+                    if key != "":
+                        key = "{} {}".format(col_name, key)
+                        # print("we would test key: ", key)
+                        sinbad_data = get_sinbad_data(key)
+
+                if not sinbad_data:
+                    col_name = 'hd'
+                    key = row[keys[col_name]]
+                    if key != "":
+                        key = "{} {}".format(col_name, key)
+                        # print("we would test key: ", key)
+                        sinbad_data = get_sinbad_data(key)
+
+                if not sinbad_data:
+                    col_name = 'hr'
+                    key = row[keys[col_name]]
+                    if key != "":
+                        key = "{} {}".format(col_name, key)
+                        # print("we would test key: ", key)
+                        sinbad_data = get_sinbad_data(key)
+
+                if not sinbad_data:
+                    col_name = 'gl'
+                    key = row[keys[col_name]]
+                    if key != "":
+                        # key = "{} {}".format(col_name, key) ## NOTE THIS KEY SEEMS TO WORK LIKE THIS!
+                        # print("we would test key: ", key)
+
+                        if not key.startswith("NN"):
+
+                            sinbad_data = get_sinbad_data(key)
+                        else:
+                            # print("WARNING SKIPPED NN...")
+                            pass
+
+
+
+
 
                 if proper == "":
 
-                    failed_lookup_count += 1
-                    proper = "X-{}".format(_id)
+                    if sinbad_data:
+                        proper = sinbad_data['MAIN_ID']
 
-                else:
-                    successful_lookup_count += 1
-                    
+                        proper = proper.replace("NAME", "") ## some of them have "NAME" in them
 
-                row.append(proper)
-                csv_writer.writerow(row)
-                csv_writer2.writerow([_id,proper,x,y,z,ci])
-                print(proper)
+                        proper = re.sub(' +', ' ', proper) ## strip away all the long chunks of spaces "the   quick  brown   fox" => "the quick brown fox"
+
+
+
+                if dist < max_distance:
+
+                    if proper == "":
+
+                        failed_lookup_count += 1
+                        proper = "X-{}".format(_id)
+
+                    else:
+                        successful_lookup_count += 1
+                        
+
+                    row.append(proper)
+                    csv_writer.writerow(row)
+                    csv_writer2.writerow([_id,proper,x,y,z,ci])
+                    print(proper)
 
 
 
