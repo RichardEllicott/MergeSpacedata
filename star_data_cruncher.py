@@ -301,7 +301,7 @@ def filtered_data_crunch():
     origin = (0.0,0.0,0.0) # work out the distance from this position
     # origin = (2.355468, -4.4873, 0.790749)
 
-    max_distance = 130.0 / 3.26156 # parsecs
+    max_distance = 140.0 / 3.26156 # parsecs
 
 
     csv_writer = csv.writer(
